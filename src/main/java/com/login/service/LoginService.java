@@ -17,6 +17,6 @@ public interface LoginService {
     List<Role>  getAllRoleInfo() throws Exception;
 
     // 사용자 정보 등록
-    User createAccount(CreateAccountForm createAccountForm);
+    User createAccount(CreateAccountForm createAccountForm) throws Exception;
 
 }

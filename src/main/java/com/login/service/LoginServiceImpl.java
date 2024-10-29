@@ -47,7 +47,6 @@ public class LoginServiceImpl implements LoginService{
             logger.info(":: LoginServiceImpl :: 권한 정보 조회");
             Role roleInfo = roleRepository.findById(roleId)
                     .orElseThrow(() -> new UsernameNotFoundException("Invalid Role ID: " + roleId));
-            logger.info(":: LoginServiceImpl :: 권한 정보 조회"+roleInfo);
             return roleInfo;
         }catch (Exception e){
             logger.error("권한 조회 오류 발생 "+ e.getMessage());
@@ -70,30 +69,36 @@ public class LoginServiceImpl implements LoginService{
     }
 
     @Override
-    public User createAccount(CreateAccountForm createAccountForm) {
-        String userId = createAccountForm.getUserId();
-        String userName = createAccountForm.getUserName();
-        String userPwd = createAccountForm.getUserPwd();
-        Set<Long> userRoles = createAccountForm.getRole();
+    public User createAccount(CreateAccountForm createAccountForm) throws Exception{
+        try {
+            logger.info(":: LoginServiceImpl :: 사용자 계정 생성");
+            String userId = createAccountForm.getUserId();
+            String userName = createAccountForm.getUserName();
+            String userPwd = createAccountForm.getUserPwd();
+            Set<Long> userRoles = createAccountForm.getRole();
 
 
-        // 역할 ID로 Role 객체 조회
-        Set<Role> roles = userRoles.stream()
-                .map(roleId -> roleRepository.findById(roleId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid role ID: " + roleId)))
-                .collect(Collectors.toSet());
+            // 역할 ID로 Role 객체 조회
+            Set<Role> roles = userRoles.stream()
+                    .map(roleId -> roleRepository.findById(roleId)
+                            .orElseThrow(() -> new IllegalArgumentException("Invalid role ID: " + roleId)))
+                    .collect(Collectors.toSet());
 
-        // User 생성 및 저장
-        User user = User.builder()
-                .userId(userId)
-                .username(userName)
-                .password(passwordEncoder.encode(userPwd))
-                .roles(roles)
-                .build();
+            // User 생성 및 저장
+            User user = User.builder()
+                    .userId(userId)
+                    .username(userName)
+                    .password(passwordEncoder.encode(userPwd))
+                    .roles(roles)
+                    .build();
 
-        // User 저장
-        User returnData = userRepository.save(user);
+            // User 저장
+            User returnData = userRepository.save(user);
 
-        return returnData;
+            return returnData;
+        }catch (Exception e){
+            logger.error(":: LoginServiceImpl :: 사용자 계정 생성중 오류 발생 "+e.getMessage());
+            throw new Exception();
+        }
     }
 }

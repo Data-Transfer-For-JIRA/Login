@@ -56,7 +56,7 @@ public class LoginController {
             value = {"/create"},
             method = {RequestMethod.POST}
     )
-    public User createAccount(@RequestBody CreateAccountForm createAccountForm){
+    public User createAccount(@RequestBody CreateAccountForm createAccountForm) throws Exception{
         logger.info(":: LoginController :: 사용자 계정 생성");
         return loginService.createAccount(createAccountForm);
     }

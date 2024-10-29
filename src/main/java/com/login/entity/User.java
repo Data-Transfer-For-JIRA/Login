@@ -1,8 +1,11 @@
 package com.login.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -12,7 +15,8 @@ import java.util.Set;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "USER",schema="user")
+@Table(name = "USER",schema= "static/user")
+@EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // ID 자동 생성 전략
@@ -27,6 +31,10 @@ public class User {
 
     @Column(name = "USER_PW")
     private String password;
+
+    @CreatedDate
+    @Column(name = "CREATED_DATE", nullable = false, updatable = false)
+    private LocalDateTime createdDate;
 
 
     @ManyToMany(fetch = FetchType.EAGER)

@@ -11,7 +11,7 @@ import javax.persistence.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ROLE",schema="user")
+@Table(name = "ROLE",schema= "static/user")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // ID 자동 생성 전략
