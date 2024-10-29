@@ -26,6 +26,20 @@ dependencies {
 	// test dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	// jpa, mssql
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'mysql:mysql-connector-java:8.0.32'
+
+	// lombock
+	compileOnly 'org.projectlombok:lombok:1.18.22'
+	annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+	// logger
+	implementation 'org.slf4j:slf4j-api:1.7.30'
+
+	//swagger
+	implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 }
 
 bootJar {

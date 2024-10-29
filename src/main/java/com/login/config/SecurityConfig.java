@@ -1,20 +1,33 @@
 package com.login.config;
 
+import com.login.service.UserDetailsServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration // Spring이 이 클래스를 빈으로 등록 및 설정을 적용
 @EnableWebSecurity // Spring Security 활성화
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    UserDetailsServiceImpl userDetailsServiceImpl;
+
     // 애플리케이션의 HTTP 보안 설정 정의
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable() // CSRF 보호 비활성화
                 .authorizeRequests() // 요청에 대한 보안 설정 시작
+                .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .antMatchers( "/api/login/**").permitAll()
                 .antMatchers("/test/index.html").authenticated()
                 .anyRequest().permitAll() // 나머지 요청은 모두 인증없이 접근 가능
                 .and()
@@ -26,11 +39,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll(); // 모든 사용자에게 로그아웃 페이지 접근 허용
     }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // BCrypt 사용
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication() // 메모리 기반 사용자 인증 설정
-                .withUser("user").password("{noop}user").roles("USER") // user 계정 설정
-                .and()
-                .withUser("admin").password("{noop}admin").roles("ADMIN"); // admin 계정 설정
+        auth.userDetailsService(userDetailsServiceImpl)
+                .passwordEncoder(passwordEncoder()); // PasswordEncoder 설정
     }
 }
