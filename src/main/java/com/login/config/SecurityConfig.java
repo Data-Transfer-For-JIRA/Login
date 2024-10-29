@@ -40,7 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout() // 로그아웃 설정
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/open/login.html")
-                    .permitAll(); // 모든 사용자에게 로그아웃 페이지 접근 허용
+                    .permitAll() // 모든 사용자에게 로그아웃 페이지 접근 허용
+                .and()
+                    .exceptionHandling()
+                    .accessDeniedPage("/open/403.html");
     }
 
     @Bean
